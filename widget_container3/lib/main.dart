@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 void main() {
-
   //指定した色のコンテナを作成する関数
   Widget generateContainer(Color col){
     return Container(
