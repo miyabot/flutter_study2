@@ -1,4 +1,4 @@
-# flutter_navigator2
+# widget_bottomnav2
 
 A new Flutter project.
 

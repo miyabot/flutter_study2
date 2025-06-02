@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "flutter_navigator2" "\0"
+            VALUE "FileDescription", "widget_bottomnav2" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "flutter_navigator2" "\0"
+            VALUE "InternalName", "widget_bottomnav2" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "flutter_navigator2.exe" "\0"
-            VALUE "ProductName", "flutter_navigator2" "\0"
+            VALUE "OriginalFilename", "widget_bottomnav2.exe" "\0"
+            VALUE "ProductName", "widget_bottomnav2" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

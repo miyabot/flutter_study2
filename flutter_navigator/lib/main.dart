@@ -1,100 +1,113 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_navigator2/second_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const Base());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+//基盤の作成
+class Base extends StatelessWidget {
+  const Base({super.key});
 
+  //処理はbuildの中
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    return const MaterialApp(
+      home:NavSample()
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+// class NavSample extends StatelessWidget {
+//   const NavSample({super.key});
 
-  final String title;
+//   @override
+//   Widget build(BuildContext context) {
+//     //下地の作成
+//     return Scaffold(
+//       //中央に寄せる
+//       body:Center(
+//         //縦に複数要素並べる
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             Text('画面１',style: TextStyle(fontSize: 36),),
+
+//             //サイズの情報を持った透明の箱
+//             SizedBox(height: 16),
+          
+//             ElevatedButton(
+//               //ボタンを押した時に呼ばれる
+//               onPressed: (){
+//                 //画面遷移
+//                 Navigator.push(
+//                   context, 
+//                   MaterialPageRoute(builder: (context)=>SecondPage(str:'値渡しの確認'))
+//                 );
+//               }, 
+//               //ボタンの中に表示する要素
+//               child: Text('次のページ')
+//             )
+//           ],
+//         ),
+//       )
+//     );
+//   }
+// }
+
+class NavSample extends StatefulWidget {
+  const NavSample({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<NavSample> createState() => _NavSampleState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _NavSampleState extends State<NavSample> {
+
+  //カウンタ変数
+  int cnt = 0;
 
   @override
   Widget build(BuildContext context) {
+    //下地の作成
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
+      //中央に寄せる
+      body:Center(
+        //縦に複数要素並べる
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('画面１',style: TextStyle(fontSize: 64),),
+          children: [
+            //カウントの表示
+            Text('$cnt',style: TextStyle(fontSize: 36),),
+
+            //サイズの情報を持った透明の箱
+            SizedBox(height: 16),
+          
+            ElevatedButton(
+              //ボタンを押した時に呼ばれる
+              onPressed: (){
+                //画面遷移
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(builder: (context)=>SecondPage(newCnt:cnt))
+                );
+              }, 
+              //ボタンの中に表示する要素
+              child: Text('次のページ')
+            )
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          //画面遷移
-          Navigator.push(
-            context, //現在地 
-            MaterialPageRoute(builder: (context)=>const MyHomePage2(title: '遷移後のページ'))//遷移先の指定
-          );
+          //カウントを増やす
+          //画面の更新をかける
+          setState(() {
+            cnt++;  
+          });
         },
-        tooltip: '次のページ',
-        child: const Icon(Icons.arrow_right_alt)
-      ), 
-    );
-  }
-}
-
-
-class MyHomePage2 extends StatefulWidget {
-  const MyHomePage2({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage2> createState() => _MyHomePageState2();
-}
-
-class _MyHomePageState2 extends State<MyHomePage2> {
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        child:Icon(Icons.add)
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('画面２',style: TextStyle(fontSize: 64),),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          //前の画面に戻る
-          //Navigator.pop(context);
-        },
-        tooltip: '前のページ',
-        child: const Icon(Icons.turn_left)
-      ), 
     );
   }
 }
