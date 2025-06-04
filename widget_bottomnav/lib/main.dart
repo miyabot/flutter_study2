@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:widget_bottomnav/account.dart';
+import 'package:widget_bottomnav/calendar.dart';
+import 'package:widget_bottomnav/home.dart';
+import 'package:widget_bottomnav/setting.dart';
+
+
 
 void main() {
   runApp(const Base());
@@ -27,9 +33,20 @@ class _FirstPageState extends State<FirstPage> {
   //選択中のアイコン管理変数
   int _currentIndex = 0;
 
+  //表示するページ管理変数
+  //リストはファイナルで宣言
+  final List<Widget> _page = [
+    HomePage(),
+    CalendarPage(),
+    SettingPage(),
+    AccountPage()
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+      body:_page[_currentIndex],
 
       //画面下部に表示するバー
       bottomNavigationBar: BottomNavigationBar(
@@ -48,6 +65,7 @@ class _FirstPageState extends State<FirstPage> {
             //_currentIndex:現在のインデックス番号
             _currentIndex = selectIndex;
           });
+
         },
 
         //見た目の装飾
