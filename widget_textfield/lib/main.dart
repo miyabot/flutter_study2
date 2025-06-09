@@ -31,7 +31,10 @@ class _HomePageState extends State<HomePage> {
   TextEditingController _controller = TextEditingController();
 
   //エラーメッセージフラグ
-  bool errorFlg = false;
+  bool _errorFlg = false;
+
+  //表示・非表示切り替えフラグ
+  bool _showFlg = true;
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +50,27 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               width: 300,
               child: TextField(
+                //入力内容の表示・非表示
+                obscureText: _showFlg,
+
                 //監視役の設定
                 controller: _controller,
 
                 //見た目の装飾
                 decoration: InputDecoration(
+                  //押すことのできるアイコン
+                  suffixIcon: IconButton(
+                    onPressed: (){
+                      setState(() {
+                        //表示・非表示の切り替え(!：反転)
+                        _showFlg = !_showFlg;
+                      });
+                    }, 
+                    icon:(_showFlg == true) ? Icon(Icons.visibility_off) : Icon(Icons.visibility)
+                  ),
                   labelText: 'パスワードを入力してください。',
                   //三項演算子：(条件式) ? 真 ： 偽
-                  errorText: (errorFlg == true) ? 'パスワードが間違えています。' : null,
+                  errorText: (_errorFlg == true) ? 'パスワードが間違えています。' : null,
                   border: OutlineInputBorder() //外枠追加
                 ),
               ),
@@ -68,7 +84,7 @@ class _HomePageState extends State<HomePage> {
                 else{
                   debugPrint('ログイン失敗');
                   setState(() {
-                    errorFlg = true;  
+                    _errorFlg = true;  
                   });
                 }
               }, 
