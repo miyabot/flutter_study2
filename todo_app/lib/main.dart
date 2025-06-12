@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/add_page.dart';
 
 void main() {
   runApp(Base());
@@ -35,10 +36,42 @@ class _TodoPageState extends State<TodoPage> {
         //要素ごとの処理
         itemBuilder: (context,index){
           return ListTile(
-            title: Text(_list[index]),
+            leading: Icon(Icons.star_border), //左端
+            title: Text(_list[index]), //メインコンテンツ
+            //右端
+            trailing: IconButton(
+              onPressed: (){
+                setState(() {
+                  //指定した場所のリストを削除
+                  _list.removeAt(index);
+                });
+              }, 
+              icon: Icon(Icons.delete)
+            ) 
           );
         }
-      )
+      ),
+      floatingActionButton: FloatingActionButton(
+
+        //async,await：非同期処理
+        onPressed: () async {
+          //返ってきた内容を格納する変数
+          String result;
+
+          //popで持って帰ってきた内容をresultに代入
+          result = await Navigator.push(
+            context, 
+            MaterialPageRoute(builder: (context)=>AddPage())
+          );
+          debugPrint('持って帰ってきた値：$result');
+
+          //リストの追加
+          setState(() {
+            _list.add(result);  
+          });
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
