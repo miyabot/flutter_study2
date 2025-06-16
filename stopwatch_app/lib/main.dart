@@ -38,13 +38,10 @@ class _StopWatchSampleState extends State<StopWatchSample> {
     //ストップウォッチの初期化
     _stopwatch = Stopwatch();
 
-    //タイマースタート
-    _stopwatch.start();
-
-    //１秒ごとに画面を更新
+    //30ミリ秒ごとに画面を更新
     Timer.periodic(
       Duration(milliseconds:30 ), //実行間隔(30ミリ秒ごと) 
-      //１秒ごとにどのような処理をするか
+      //30ミリ秒ごとにどのような処理をするか
       (Timer timer){
         setState(() {});
       }
@@ -54,14 +51,53 @@ class _StopWatchSampleState extends State<StopWatchSample> {
 
   //表示用の時間(分:秒.ミリ秒)をフォーマット
   String _formatTime(){
-      return '1:13.123';
+      final _elepsed = _stopwatch.elapsed; //経過時間の取得
+
+      //padLeft(2,'0')：文字列の長さが2になるように、足りない分を左側に'0'で埋める
+      String minutes = (_elepsed.inMinutes % 60).toString().padLeft(2,'0'); //分数を文字列に変換して代入
+      String seconds = (_elepsed.inSeconds % 60).toString().padLeft(2,'0');
+      String milliSeconds = (_elepsed.inMilliseconds % 1000).toString().padLeft(3,'0');
+
+      //分:秒.ミリ秒の形に直す
+      return '$minutes:$seconds.$milliSeconds';
   }
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body:Center(
-        child:Text('${_stopwatch.elapsed.inMinutes}:${_stopwatch.elapsed.inSeconds}.${_stopwatch.elapsed.inMilliseconds}',style: TextStyle(fontSize: 36),)
+        child:Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(_formatTime(),style: TextStyle(fontSize: 36),),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround, //均等に並べる
+              children: [
+                ElevatedButton(
+                  onPressed: (){
+                    //タイマースタート
+                    _stopwatch.start();
+                  }, 
+                  child:Text('スタート')
+                ),
+                ElevatedButton(
+                  onPressed: (){
+                    //タイマーストップ
+                    _stopwatch.stop();
+                  }, 
+                  child:Text('ストップ')
+                ),
+                ElevatedButton(
+                  onPressed: (){
+                    //タイマーリセット
+                    _stopwatch.reset();
+                  }, 
+                  child:Text('リセット')
+                ),
+              ],
+            )
+          ],
+        )
       )
     );
   }
