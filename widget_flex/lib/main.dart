@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 void main() {
   //実行するアプリの選択
   runApp(const Base());
@@ -31,20 +30,32 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       //body:コンテンツの表示部分
       //Column:widgetを縦に並べる
-      body:Column(
-        children: [
-          //Flexible:子widgetが利用可能なスペースを埋めるように拡大する
-          //Flexible:子widgetサイズを柔軟に変更可能
-          //Expanded:子widgetサイズを柔軟に変更不可
-          Expanded(
-            flex:2, //比率
-            child: Container(color: Colors.red,height: 50,)
+      //Row:widgetを横に並べる
+      body:Center(
+        child: SizedBox( //サイズの情報を持った透明の箱
+          width: 300.0, //横幅
+          height: 300.0,//縦幅
+          child: Row(
+            children: [
+              //Flexible:子widgetが利用可能なスペースを埋めるように拡大する
+              //Flexible:子widgetサイズを柔軟に変更可能
+              //Expanded:子widgetサイズを柔軟に変更不可
+              
+              Flexible(
+                flex:1, //比率
+                child: Container(color: Colors.blue)
+              ),
+              Flexible(
+                flex:1, //比率
+                child: Container(color: Colors.yellow,)
+              ),
+              Flexible(
+                flex:1, //比率
+                child: Container(color: Colors.red,)
+              ),
+            ],
           ),
-          Expanded(
-            flex:1, //比率
-            child: Container(color: Colors.blue,)
-          ),
-        ],
+        ),
       )
     );
   }
