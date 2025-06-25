@@ -10,6 +10,7 @@ class Base extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       home:TimelinePage()
     );
   }
@@ -27,6 +28,11 @@ class TimelinePage extends StatelessWidget {
       appBar: AppBar(
         shape: Border(bottom: BorderSide(color: Colors.grey)),
         backgroundColor: Colors.white, //AppBarの背景色
+        centerTitle: true,
+        //画面左端に表示する内容
+        leading: Image.network(
+          'https://news.mynavi.jp/article/20240820-3008612/images/102.jpg',
+        ),
         title: Center(
           //ネットワーク上の画像を取得
           child: Image.network(
@@ -35,6 +41,13 @@ class TimelinePage extends StatelessWidget {
             height:40.0,
           ),
         ),
+        //画面右上に表示する内容
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Icon(Icons.settings),
+          ),
+        ],
       ),
 
       //メインコンテンツ部分
@@ -59,18 +72,31 @@ class TimelinePage extends StatelessWidget {
                   backgroundImage: NetworkImage('https://news.mynavi.jp/article/20240820-3008612/images/102.jpg'),
                 ),
                 SizedBox(width: 12,),
-                Column(
-                  //mainAxisAlignment:縦軸の配置
-                  //crossAxisAlignment:横軸の配置
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '宮本 @miyamoto_dayo',
-                      style: TextStyle(fontWeight: FontWeight.bold)
-                    ),
-                    SizedBox(height:4),
-                    Text('xのタイムラインをトレースするためのプロジェクト'),
-                  ],
+                Expanded(
+                  child: Column(
+                    //mainAxisAlignment:縦軸の配置
+                    //crossAxisAlignment:横軸の配置
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '宮本 @miyamoto_dayo',
+                        style: TextStyle(fontWeight: FontWeight.bold)
+                      ),
+                      SizedBox(height:4),
+                      Text('xのタイムラインをトレースするためのプロジェクト'),
+                      Row(
+                        //spaceBetewwn:等間隔に並べる
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(Icons.comment_outlined,size:18),
+                          Icon(Icons.repeat,size:18),
+                          Icon(Icons.favorite_border,size:18),
+                          Icon(Icons.bookmark_border,size:18),
+                          Icon(Icons.ios_share,size:18),
+                        ],  
+                      )
+                    ],
+                  ),
                 )
               ],
             ),
