@@ -39,6 +39,7 @@ class _HomePageState extends State<HomePage> {
         itemCount: _map.length, //要素数
         //要素ごとの処理
         itemBuilder: (context,index){
+          //Map型からList型に変換
           final entry = _map.entries.toList()[index];
           debugPrint('entryの中身：$entry');
           //map型はキーを指定してバリュー(値)を取り出す
