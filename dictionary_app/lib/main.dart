@@ -1,3 +1,5 @@
+import 'package:dictionary_app/add_page.dart';
+import 'package:dictionary_app/detail_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -54,10 +56,30 @@ class _HomePageState extends State<HomePage> {
           return ListTile(
             title:Text(entries[index].key),
             //押された時に呼ばれる
-            onTap: (){},
+            onTap: (){
+              //画面遷移
+              Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context)=>DetailPage(
+                    term: entries[index].key,value: entries[index].value,
+                  )
+                )
+              );  
+            },
           );
         }
-      )
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: ()async{
+         final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context)=>AddPage()) 
+          );
+          debugPrint('result:$result');
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
