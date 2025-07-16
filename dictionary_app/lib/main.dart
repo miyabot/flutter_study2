@@ -54,6 +54,18 @@ class _HomePageState extends State<HomePage> {
         itemCount: _dictionary.length, //４
         itemBuilder: (context,index){ //０～３
           return ListTile(
+
+            //右端に表示する内容
+            trailing: IconButton(
+              onPressed: (){
+                //削除処理(remove)
+                setState(() {
+                  //_dictionary.remove(entries[index].key);  
+                });
+              }, 
+              icon: Icon(Icons.delete)
+            ),
+
             title:Text(entries[index].key),
             //押された時に呼ばれる
             onTap: (){
@@ -72,11 +84,22 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: ()async{
-         final result = await Navigator.push(
+          final Map<String,String> result = await Navigator.push(
             context,
             MaterialPageRoute(builder: (context)=>AddPage()) 
           );
           debugPrint('result:$result');
+
+          //画面の更新をかける
+          setState(() {
+            //追加処理
+            _dictionary[result['term']!] = result['value']!;
+            _dictionary.remove(_dictionary['Flutter']);
+
+            //キーが存在しない場合は新しく作成される
+            //_dictionary['神戸電子'] = '電子だけではありません';
+          });
+          
         },
         child: Icon(Icons.add),
       ),
