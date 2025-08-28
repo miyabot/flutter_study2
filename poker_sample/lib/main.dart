@@ -53,6 +53,10 @@ class _PokerPageState extends State<PokerPage> {
 
   //山札の構築を行う関数
   void _buildDeck() {
+
+    //山札のリセット(配列の中身を空にする)
+    _deck.clear();
+
     //山札への追加
     for (int i = 0; i < _suits.length; i++) {
       for (int j = 0; j < _numbers.length; j++) {
@@ -67,10 +71,20 @@ class _PokerPageState extends State<PokerPage> {
   }
 
   //カードを引くための関数
-  void _draw(){
-    for(int i = 0;i<5;i++){
+  void _draw() {
+
+    //手札のリセット(配列の中身を空にする)
+    _hand.clear();
+
+    for (int i = 0; i < 5; i++) {
       _hand.add(_deck[i]);
     }
+    debugPrint('現在の手札：$_hand');
+  }
+
+  Color _suitColor(String suit){
+    //♥と♦は赤、それ以外は黒
+    return (suit == '♥'||suit == '♦') ? Colors.red:Colors.black;
   }
 
   //初期化関数(クラス生成時、最初に呼ばれる)
@@ -78,7 +92,11 @@ class _PokerPageState extends State<PokerPage> {
   void initState() {
     super.initState();
 
+    //山札作成
     _buildDeck();
+
+    //カードを５枚引く
+    _draw();
   }
 
   @override
@@ -87,7 +105,53 @@ class _PokerPageState extends State<PokerPage> {
     return Scaffold(
       //画面上部の作成
       appBar: AppBar(title: Text('PokerSample')),
-      body: Center(child: Text('５枚の手札')),
+      //中央に寄せる
+      body: Center(
+        //横に並べる
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              //中央に寄せる
+              mainAxisAlignment: MainAxisAlignment.center,
+
+              //Widget間のスペースを作成
+              spacing: 12,
+
+              //map:要素を一つずつ取り出して繰り返す(iterable)
+              children:
+                  _hand.map((card) {
+                    //コンテナの作成
+                    return Container(
+                      color: Colors.white,
+                      width: 70,
+                      height: 100,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(card['number']!, style: TextStyle(fontSize: 24,color: _suitColor(card['suit']!))),
+                          Text(card['suit']!, style: TextStyle(fontSize: 24,color: _suitColor(card['suit']!))),
+                        ],
+                      ),
+                    );
+                  }).toList(), //Iterable → Listに変換
+            ),
+            SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () {
+                //画面の更新
+                setState(() {
+                  //山札作成
+                  _buildDeck();
+                  //カードを５枚引く
+                  _draw();
+                });
+              },
+              child: Text('再配布'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
