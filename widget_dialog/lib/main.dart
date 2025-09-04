@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -39,6 +41,7 @@ class _DialogPageState extends State<DialogPage> {
               builder: (context){
                 //表示内容
                 return AlertDialog(
+                  backgroundColor: Colors.white,
                     title: Center(
                       child: Text('アカウント削除',style:TextStyle(fontWeight:FontWeight.bold))
                     ),
@@ -74,7 +77,52 @@ class _DialogPageState extends State<DialogPage> {
                           ),
                         ),
                       ],
-                    )
+                    ),
+                    actions: [
+                      //横に並べる
+                      Row(
+                        //等間隔
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          ElevatedButton(
+                            //見た目の変更
+                            style: ElevatedButton.styleFrom(
+                              //最小サイズの設定
+                              minimumSize: Size(120, 50),
+                              backgroundColor: Colors.white, //背景色
+                              foregroundColor:Colors.black, //文字色
+                              side: BorderSide(),
+                              //角丸
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              )
+                            ),
+                            onPressed: (){
+                              Navigator.pop(context);
+                            }, 
+                            child: Text('キャンセル')
+                          ),
+                          ElevatedButton(
+                            //見た目の変更
+                            style: ElevatedButton.styleFrom(
+                              //最小サイズの設定
+                              minimumSize: Size(120, 50),
+                              backgroundColor: const Color.fromARGB(255, 255, 126, 117), //背景色
+                              foregroundColor:Colors.white, //文字色
+                              //角丸
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              )
+                            ),
+                            onPressed: (){
+                              //タスクキル
+                              exit(0);
+                            }, 
+                            child: Text('削除')
+                          ),
+                        ],
+                      )
+                    ],
                 ); 
               }
             );
