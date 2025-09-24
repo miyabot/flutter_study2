@@ -1,16 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
   runApp(const Base());
 }
+
+//ログイン中かどうか
+bool isLogin = false;
+
+//画面遷移の一元管理
+final GoRouter _router = GoRouter(
+  routes: [
+    //画面遷移の設定
+    GoRoute(
+      path: '/', //　'/'：ホームパス(最初に表示したい画面)
+      builder: (context,state)=>const LoginPage() //遷移先
+    ),
+    GoRoute(
+      path: '/mypage', 
+      builder: (context,state)=>const MyPage() //遷移先
+    ),
+    GoRoute(
+      path: '/loginreq', 
+      builder: (context,state)=>const LoginReq() //遷移先
+    ),
+
+    //リダイレクト用の設定(条件によってルートの分岐が可能)
+    GoRoute(
+      path: '/redirect-login',
+      redirect: (context,state){
+        if(isLogin){
+          //ログイン成功
+          return '/mypage';
+        }
+        else{
+          //ログイン失敗
+          return '/loginreq';
+        }
+      }
+    )
+
+  ]
+);
 
 class Base extends StatelessWidget {
   const Base({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home:LoginPage()
+    //GoRouterを使う際の書き方
+    return MaterialApp.router(
+      routerConfig: _router,
     );
   }
 }
@@ -23,9 +63,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
-  //ログイン中かどうか
-  bool isLogin = false;
 
   @override
   Widget build(BuildContext context) {
@@ -54,20 +91,7 @@ class _LoginPageState extends State<LoginPage> {
             ElevatedButton(
               onPressed: (){
                 //ログイン状態をチェック
-                if(isLogin){
-                  //ログイン成功
-                  Navigator.push(
-                    context, 
-                    MaterialPageRoute(builder: (context)=>const MyPage())
-                  );
-                }
-                else{
-                  //ログイン失敗
-                  Navigator.push(
-                    context, 
-                    MaterialPageRoute(builder: (context)=>const LoginReq())
-                  );
-                }
+                context.push('/redirect-login');
               }, 
               child: Text('ログイン')
             ),
