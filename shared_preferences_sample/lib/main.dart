@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const Base());
@@ -9,9 +10,7 @@ class Base extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home:HomePage()
-    );
+    return const MaterialApp(home: HomePage());
   }
 }
 
@@ -23,20 +22,117 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   //TextFieldの監視役(コントローラー)
   final TextEditingController _con = TextEditingController();
 
   //保存したテキストを表示するための変数
   String _saveText = '';
 
+  //保存されたリスト
+  List<String> _saveList = [];
+
+  //保存されたマップ
+  Map<DateTime,String> _saveMap = {};
+
+  //初期化関数
+  @override
+  void initState() {
+    super.initState();
+
+    //SharedPreferencesの中身をロード
+    _loadSaveData();
+    _loadSaveDataList();
+  }
+
+  //保存されているテキストを読み込む処理
+  Future<void> _loadSaveData() async {
+    //SharedPreferencesを使うためのコード
+    final prefs = await SharedPreferences.getInstance();
+
+    //アプリ起動時に保存されているデータを読み込む
+    setState(() {
+      //データがなければ空文字 '' を使う
+      _saveText = prefs.getString('save_text') ?? '';
+    });
+  }
+
+  //保存されているテキストを読み込む処理
+  Future<void> _loadSaveDataList() async {
+    //SharedPreferencesを使うためのコード
+    final prefs = await SharedPreferences.getInstance();
+
+    //アプリ起動時に保存されているデータを読み込む
+    setState(() {
+      //データがなければ空文字 '' を使う
+      _saveList = prefs.getStringList('save_list') ?? [];
+    });
+  }
+
+  //入力したテキストを保存する関数(非同期)
+  Future<void> _saveData() async {
+    //SharedPreferencesを使うためのコード
+    final prefs = await SharedPreferences.getInstance();
+
+    //TextFieldに入力した文字列を「save_text」というKeyで保存
+    await prefs.setString('save_text', _con.text);
+
+    setState(() {
+      //入力内容の保存
+      _saveText = _con.text;
+    });
+  }
+
+  //List<String>
+  Future<void> _saveDataList() async {
+    //SharedPreferencesを使うためのコード
+    final prefs = await SharedPreferences.getInstance();
+
+    //入力内容をリストに追加
+    setState(() {
+      _saveList.add(_con.text);  
+    });
+
+    //TextFieldに入力した文字列を「save_text」というKeyで保存
+    await prefs.setStringList('save_list', _saveList);
+  }
+
+  //保存されているテキストを削除する関数
+  Future<void> _clearData() async {
+    //SharedPreferencesを使うためのコード
+    final prefs = await SharedPreferences.getInstance();
+
+    //指定したkeyのデータを削除
+    await prefs.remove('save_text');
+
+    setState(() {
+      //入力内容の削除
+      _con.clear();
+      //保存されている内容の削除
+      _saveText = '';
+    });
+  }
+
+  //保存されているテキストを削除する関数
+  Future<void> _clearDataList() async {
+    //SharedPreferencesを使うためのコード
+    final prefs = await SharedPreferences.getInstance();
+
+    //指定したkeyのデータを削除
+    await prefs.remove('save_list');
+
+    setState(() {
+      //入力内容の削除
+      _con.clear();
+      //保存されている内容の削除
+      _saveList = [];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('保存の仕組み'),
-      ),
-      body:Column(
+      appBar: AppBar(title: Text('保存の仕組み')),
+      body: Column(
         //左端
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -47,34 +143,37 @@ class _HomePageState extends State<HomePage> {
           Row(
             children: [
               ElevatedButton(
-                onPressed: (){
-                  setState(() {
-                    //入力内容の保存
-                    _saveText = _con.text;
-                  });
-                }, 
-                child: Text('保存')
+                onPressed: () {
+                  //ローカルに保存
+                  _saveData();
+                },
+                child: Text('保存'),
               ),
               SizedBox(width: 16),
               ElevatedButton(
-                onPressed: (){
-                  setState(() {
-                    //入力内容の削除
-                    _con.clear();
-
-                    //保存されている内容の削除
-                    _saveText = '';
-                  });
-                }, 
+                onPressed: () {
+                  _saveDataList();
+                },
+                child: Text('リスト保存'),
+              ),
+              SizedBox(width: 16),
+              ElevatedButton(
+                onPressed: () {
+                  _clearData();
+                  _clearDataList();
+                },
                 child: Text('削除')
               ),
             ],
           ),
           SizedBox(height: 32),
-          Text('保存されているテキスト'),
-          Text(_saveText)
+          Text('保存されているテキスト(String)'),
+          Text(_saveText),
+          SizedBox(height: 32),
+          Text('保存されているテキスト(List<String>)'),
+          Text(_saveList.join(','),style: TextStyle(fontSize: 36),),
         ],
-      )
+      ),
     );
   }
 }
