@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -42,6 +44,7 @@ class _HomePageState extends State<HomePage> {
     //SharedPreferencesの中身をロード
     _loadSaveData();
     _loadSaveDataList();
+    _loadSaveDataMap();
   }
 
   //保存されているテキストを読み込む処理
@@ -65,6 +68,31 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       //データがなければ空文字 '' を使う
       _saveList = prefs.getStringList('save_list') ?? [];
+    });
+  }
+
+  //保存されているMapを読み込む処理
+  Future<void>_loadSaveDataMap()async{
+    //SharedPreferencesを使うためのコード
+    final prefs = await SharedPreferences.getInstance();
+
+    //JSON文字列を取り出す。データがなければ空のJSON文字列を返す
+    final jsonString = prefs.getString('save_map') ?? '{}';
+
+    //JSON文字列をMap<String,dynamic>に変換
+    final decodedMap = json.decode(jsonString) as Map<String,dynamic>; 
+
+    //Map<String,dynamic>をMap<DateTime,String>に変換
+    final Map<DateTime,String> tempMap = {};
+    decodedMap.forEach((key,value){
+      //JSONで保存されたStringキーをDateTimeに戻す
+      if(value is String){
+        tempMap[DateTime.parse(key)] = value;
+      }
+    });
+
+    setState(() {
+      _saveMap =tempMap;
     });
   }
 
@@ -95,6 +123,38 @@ class _HomePageState extends State<HomePage> {
     //TextFieldに入力した文字列を「save_text」というKeyで保存
     await prefs.setStringList('save_list', _saveList);
   }
+
+  //Map<DateTime,String>
+  Future<void> _saveDataMap() async{
+    //SharedPreferencesを使うためのコード
+    final prefs = await SharedPreferences.getInstance();
+
+    //現在の入力内容と時刻をMapに追加
+    setState(() {
+      _saveMap[DateTime.now()] = _con.text;
+    });
+    //中身の確認
+    debugPrint('$_saveMap');
+
+    //Map<DateTime,String>をMap<String,dynamic>に変換
+    final Map<String,dynamic> strKeyMap = {};
+
+    //_saveMapの各要素を取り出す
+    _saveMap.forEach((key,value){
+      //「DateTime型」を「JSONが理解できるString型」に変換
+      strKeyMap[key.toIso8601String()]=value;
+    });
+
+    //Map型をJSON文字列に変換
+    final jsonString = json.encode(strKeyMap);
+
+    //JSON文字列をSharedPreferenceに保存
+    await prefs.setString('save_map', jsonString);
+
+    //保存後に入力欄をクリア
+    _con.clear();
+
+  } 
 
   //保存されているテキストを削除する関数
   Future<void> _clearData() async {
@@ -150,11 +210,18 @@ class _HomePageState extends State<HomePage> {
                 child: Text('保存'),
               ),
               SizedBox(width: 16),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     _saveDataList();
+              //   },
+              //   child: Text('リスト保存'),
+              // ),
+              // SizedBox(width: 16),
               ElevatedButton(
                 onPressed: () {
-                  _saveDataList();
+                  _saveDataMap();
                 },
-                child: Text('リスト保存'),
+                child: Text('マップ保存'),
               ),
               SizedBox(width: 16),
               ElevatedButton(
@@ -172,6 +239,10 @@ class _HomePageState extends State<HomePage> {
           SizedBox(height: 32),
           Text('保存されているテキスト(List<String>)'),
           Text(_saveList.join(','),style: TextStyle(fontSize: 36),),
+          SizedBox(height: 32),
+          Text('保存されているテキスト(Map<DataTime,String>)'),
+          //_saveMapの各要素を取り出してそれぞれのkeyとvalueを表示
+          Text(_saveMap.entries.map((e)=>'${e.key} : ${e.value}').join('\n'))
         ],
       ),
     );
